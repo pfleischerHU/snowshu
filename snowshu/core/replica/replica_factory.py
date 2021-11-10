@@ -1,6 +1,6 @@
 import time
 from pathlib import Path
-from typing import TextIO, Union, Optional
+from typing import Optional, TextIO, Union
 
 from snowshu.core.configuration_parser import (Configuration,
                                                ConfigurationParser)

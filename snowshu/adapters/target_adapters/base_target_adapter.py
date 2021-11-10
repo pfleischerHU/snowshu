@@ -1,14 +1,14 @@
 import os
 from datetime import datetime
 from time import sleep
-from typing import TYPE_CHECKING, Iterable, List, Optional
+from typing import TYPE_CHECKING, Iterable, List, Optional, Union
 
 import pandas as pd
 
 from snowshu.adapters import BaseSQLAdapter
 from snowshu.configs import (DEFAULT_INSERT_CHUNK_SIZE,
                              DOCKER_TARGET_CONTAINER, DOCKER_TARGET_PORT,
-                             IS_IN_DOCKER)
+                             IS_IN_DOCKER, DOCKER_REMOUNT_DIRECTORY)
 from snowshu.core.docker import SnowShuDocker
 from snowshu.core.models import Attribute, Credentials, Relation
 from snowshu.core.models import DataType, data_types as dt
@@ -199,7 +199,9 @@ AS
     @staticmethod
     def _build_snowshu_envars(snowshu_envars: list) -> list:
         """helper method to populate envars with `snowshu`"""
-        return [f"{envar}=snowshu" for envar in snowshu_envars]
+        envars = [f"{envar}=snowshu" for envar in snowshu_envars]
+        envars.append(f"PGDATA=/{DOCKER_REMOUNT_DIRECTORY}")
+        return envars
 
     def _initialize_snowshu_meta_database(self) -> None:
         self.create_database_if_not_exists('snowshu')
